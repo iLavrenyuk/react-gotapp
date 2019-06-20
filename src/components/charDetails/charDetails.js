@@ -1,10 +1,28 @@
-import React, {Component} from 'react';
-import './charDetails.css';
+import React, { Component } from 'react';
+import styled from 'styled-components';
+
 export default class CharDetails extends Component {
 
     render() {
+
+        const CharDetails = styled.div `
+            rounded;
+            background-color: #fff;
+            padding: 25px 25px 15px 25px;
+            margin-bottom: 40px;
+            h4 {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+        `
+        const SelectError = styled.div `
+            color: #fff;
+            text-align: center;
+            font-size: 26px;
+        `
+        
         return (
-            <div className="char-details rounded">
+            <CharDetails>
                 <h4>John Snow</h4>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between">
@@ -24,7 +42,7 @@ export default class CharDetails extends Component {
                         <span>First</span>
                     </li>
                 </ul>
-            </div>
+            </CharDetails>
         );
     }
 }
