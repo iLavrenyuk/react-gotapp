@@ -12,11 +12,13 @@ export default class GotService {
         }
         return await res.json();
     }
-    getAllCharacters() {
-        return this.getResource(`/characters?page=5&pageSize=10`);
+    async getAllCharacters() {
+        const res = await this.getResource(`/characters?page=5&pageSize=10`);
+        return res.map(this._transformCharacter);
     }
-    getCharacter(id) {
-        return this.getResource(`/characters/${id}`);
+    async getCharacter(id) {
+        const character = await this.getResource(`/characters/${id}`);
+        return this._transformCharacter(character);
     }
     getAllBooks() {
         return this.getResource(`/books?page=1&pageSize=15`);
@@ -30,17 +32,41 @@ export default class GotService {
     getHouses(id) {
         return this.getResource(`/houses/${id}`);
     }
+
+    _transformCharacter(char) {
+        function correct(item) {
+            if (item === '') {
+                item = 'unknown'; // unknown
+            }
+            return item;
+        };
+
+        return {
+            name: char.name,
+            gender: correct(char.gender),
+            born: correct(char.born),
+            died: correct(char.died),
+            culture: correct(char.culture)
+        }
+    }
+
+    _transformHouse(house) {
+        return {
+            name: house.name,
+            region: house.region,
+            words: house.words,
+            titles: house.titles,
+            overlord: house.overlord,
+            ancestralWeapons: house.ancestralWeapons
+        }
+    }
+
+    _transformBook(book) {
+        return {
+            name: book.name,
+            numberOfPages: book.numberOfPages,
+            publisher: book.publisher,
+            released: book.released
+        }
+    }
 }
-
-const got = new GotService();
-got.getAllBooks()
-    .then(res => console.log(res));
-
-got.getBook(3)
-    .then(res => console.log(res));
-
-got.getAllHouses()
-    .then(res => console.log(res));
-
-got.getHouses(130)
-    .then(res => console.log(res));
