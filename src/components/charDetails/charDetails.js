@@ -1,71 +1,108 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import gotService from '../../services/gotService';
+import Spinner from '../spinner';
+import ErrorMassage from '../errorMassage';
 
 export default class CharDetails extends Component {
-    constructor() {
-        super();
-        this.char();
-    }
 
     gotService = new gotService();
     state = {
-        char: {}
+        char: null,
+        error: false
     }
-    onCharLoaded = (char) => {
+
+
+    onError = (err) => {
         this.setState({
-            char
+            error: true
         })
     }
 
-    char() {
-        const id = 583;
-        this.gotService.getCharacter(id)
-            .then(this.onCharLoaded)
+    componentDidMount() {
+        this.updateChar();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.charId !== prevProps.charId) {
+            this.updateChar();
+        }
+    }
+
+    updateChar() {
+        const { charId } = this.props;
+        if (!charId) {
+            return;
+        }
+
+        this.gotService.getCharacter(charId)
+            .then((char) => {
+                this.setState({ char })
+            })
+            .catch(this.onError);
     }
 
     render() {
-
-        const { char: { name, gender, born, died, culture } } = this.state;
 
         const CharDetails = styled.div`
             rounded;
             background-color: #fff;
             padding: 25px 25px 15px 25px;
             margin-bottom: 40px;
-            h4 {
-                margin-bottom: 20px;
-                text-align: center;
-            }
-        `
-        const SelectError = styled.div`
+                h4 {
+                    margin-bottom: 20px;
+                    text-align: center;
+                }
+        `;
+        const SelectError = styled.span`
             color: #fff;
             text-align: center;
             font-size: 26px;
-        `
+        `;
+
+        const { char, error } = this.state;
+
+        if (!char) {
+            return <Spinner />
+        }
+
+        if (!this.state.char) {
+            return <SelectError>Please select a character</SelectError>
+        }
+        const errorMassage = error ? <ErrorMassage /> : <CharViev char={char} />;
 
         return (
             <CharDetails>
-                <h4>{name}</h4>
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Gender</span>
-                        <span>{gender}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Born</span>
-                        <span>{born}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Died</span>
-                        <span>{died}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Culture</span>
-                        <span>{culture}</span>
-                    </li>
-                </ul>
+                {errorMassage}
             </CharDetails>
         );
     }
+}
+
+const CharViev = ({ char }) => {
+    const { name, gender, born, died, culture } = char;
+
+    return (
+        <>
+            <h4>{name}</h4>
+            <ul className="list-group list-group-flush">
+                <li className="list-group-item d-flex justify-content-between">
+                    <span className="term">Gender</span>
+                    <span>{gender}</span>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                    <span className="term">Born</span>
+                    <span>{born}</span>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                    <span className="term">Died</span>
+                    <span>{died}</span>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                    <span className="term">Culture</span>
+                    <span>{culture}</span>
+                </li>
+            </ul>
+        </>
+    );
 }

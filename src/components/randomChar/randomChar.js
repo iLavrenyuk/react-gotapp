@@ -6,18 +6,22 @@ import ErrorMassage from '../errorMassage';
 
 export default class RandomChar extends Component {
 
-    constructor() {
-        super();
-        this.updateChar();
-
-    }
-
     gotService = new gotService();
     state = {
         char: {},
         loading: true,
         error: false
     }
+
+    componentDidMount() {
+        this.updateChar();
+        this.timerId = setInterval(this.updateChar, 1500)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerId)
+    }
+    
 
     onCharLoaded = (char) => {
         this.setState({
@@ -33,8 +37,8 @@ export default class RandomChar extends Component {
         })
     }
 
-    updateChar() {
-        const id = Math.floor(Math.random() * 140 + 25); //25-140
+    updateChar = () => {
+        const id = Math.floor(Math.random() * 600); //25-140
         this.gotService.getCharacter(id)
             .then(this.onCharLoaded)
             .catch(this.onError);

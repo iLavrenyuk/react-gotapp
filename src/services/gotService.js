@@ -34,19 +34,21 @@ export default class GotService {
     }
 
     _transformCharacter(char) {
+        console.log(char.url.match(/\d+/g));
         function correct(item) {
             if (item === '') {
-                item = 'unknown'; // unknown
+                item = 'unknown :('; // unknown
             }
             return item;
         };
 
         return {
-            name: char.name,
+            name: correct(char.name),
             gender: correct(char.gender),
             born: correct(char.born),
             died: correct(char.died),
-            culture: correct(char.culture)
+            culture: correct(char.culture),
+            id: char.url.match(/\d+/g)
         }
     }
 
