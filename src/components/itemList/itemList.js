@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import gotService from '../../services/gotService';
-import Spinner from '../spinner'
+import Spinner from '../spinner';
 
 export default class ItemList extends Component {
 
@@ -11,19 +11,24 @@ export default class ItemList extends Component {
     }
 
     componentDidMount() {
-        this.gotService.getAllCharacters()
-            .then((charList) => {
-                this.setState({ charList })
+        const { getData } = this.props
+
+        getData()
+            .then((itemList) => {
+                this.setState({ itemList })
             })
     }
 
     renderItems(arr) {
         return arr.map((item) => {
+            const {id} = item;
+            const label  = this.props.renderItem(item);
+
             return (
-                <li key={item.id}
+                <li key={id}
                     className="list-group-item"
-                    onClick={() => this.props.onCharSelected(item.id)}>
-                    {item.name}
+                    onClick={() => this.props.onItemSelected(id)}>
+                    {label}
                 </li>
             )
         })
@@ -31,15 +36,15 @@ export default class ItemList extends Component {
 
     render() {
 
-        const { charList } = this.state;
+        const { itemList } = this.state;
 
-        if (!charList) {
+        if (!itemList) {
             return <Spinner />
         }
 
-        const items = this.renderItems(charList);
+        const items = this.renderItems(itemList);
 
-        const ItemList = styled.ul`
+        const ItemsList = styled.ul`
             cursor: pointer;
             list-group-item {
                 cursor: pointer;
@@ -47,9 +52,9 @@ export default class ItemList extends Component {
         `;
 
         return (
-            <ItemList>
+            <ItemsList>
                 {items}
-            </ItemList>
+            </ItemsList>
         );
     }
 }

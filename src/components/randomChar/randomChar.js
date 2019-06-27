@@ -15,7 +15,7 @@ export default class RandomChar extends Component {
 
     componentDidMount() {
         this.updateChar();
-        this.timerId = setInterval(this.updateChar, 1500)
+        this.timerId = setInterval(this.updateChar, 15000)
     }
 
     componentWillUnmount() {
@@ -38,7 +38,7 @@ export default class RandomChar extends Component {
     }
 
     updateChar = () => {
-        const id = Math.floor(Math.random() * 600); //25-140
+        const id = Math.floor(Math.random() * 600 + 25); //25-140
         this.gotService.getCharacter(id)
             .then(this.onCharLoaded)
             .catch(this.onError);
