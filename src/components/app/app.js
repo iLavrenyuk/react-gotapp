@@ -14,8 +14,13 @@ class Home extends Component {
     render() {
         return(
             <Alert color="info">
-            It is home page. Lesson 11 Well done!
-          </Alert>
+            Hi!
+            <br/>
+            <br/>
+            Top right select the desired column.
+            <br/>
+            (Cправа вверху выберите желаемую графу.)
+            </Alert>
         )
     }
 }
